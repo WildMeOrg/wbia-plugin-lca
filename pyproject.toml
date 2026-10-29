@@ -1,2 +1,91 @@
 [build-system]
-requires = ["setuptools", "wheel", "setuptools_scm[toml]", "scikit-build", "cmake", "ninja"]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "beta_stability"
+version = "0.1.0"
+description = "Beta Stability — stability-driven clustering with active review for wildlife re-identification."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.11"
+dependencies = [
+    "typing-extensions",
+    "h5py",
+    "hdbscan",
+    "matplotlib",
+    "networkx",
+    "numpy",
+    "omegaconf",
+    "opencv-python-headless",
+    "pandas",
+    "pillow",
+    "pyyaml",
+    "scikit-learn",
+    "scipy",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "pytest-cov",
+    "pytest-subprocess",
+    "coverage",
+    "codecov",
+    "xdoctest",
+    "brunette",
+]
+docs = [
+    "sphinx",
+    "sphinx-rtd-theme",
+]
+# Only scripts/reproduce_gzcd.py needs these: the package itself consumes
+# embeddings that were computed elsewhere.
+embeddings = [
+    "huggingface-hub",
+    "torch",
+    # The model's remote code targets the 4.x API: transformers 5 renamed
+    # _tied_weights_keys, which MiewIdNet relies on.
+    "transformers>=4.40,<5",
+    "albumentations",
+    "timm",
+]
+
+[project.scripts]
+beta_stability-cluster = "beta_stability.run:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["beta_stability"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "beta_stability",
+    "README.rst",
+    "LICENSE",
+    "pyproject.toml",
+]
+
+[tool.uv]
+package = true
+
+[tool.ruff]
+# Experiment code is not held to the package's standard.
+extend-exclude = ["beta_stability/exploratory", "internal"]
+
+[tool.ruff.lint.per-file-ignores]
+# These hold families of functions that share one signature so a registry or an
+# interface can call them uniformly, which means each one leaves some of its
+# parameters unused.
+"beta_stability/metrics/cluster_validator.py" = ["ARG001"]
+"beta_stability/metrics/cluster_metrics.py" = ["ARG001"]
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "B", "C4", "SIM", "RET", "ARG", "PIE", "PERF", "RUF"]
+ignore = [
+    "E501",             # line length: brunette owns wrapping
+    "RUF001",           # mathematical symbols in strings, docstrings and
+    "RUF002",           # comments are deliberate: beta, sigma, union
+    "RUF003",
+]

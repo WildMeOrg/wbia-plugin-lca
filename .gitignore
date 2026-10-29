@@ -1,15 +1,63 @@
+# Version files (dynamic)
+version.py
+_version.py
+
+# OS / editor cruft
 .DS_Store
+.codex
 
-failed_doctests.txt
-timeings.txt
-profile_output*.txt
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.eggs/
 
-*.egg-info
-__pycache__
-_docs/_build
-_page/
+# Virtual envs / uv
+.venv/
+.env
 
-test_*.png
-*.log
+# Test / coverage
+.coverage
+.pytest_cache/
+htmlcov/
+coverage.xml
 
-lca.decisions.csv
+# Ignored dirs
+tmp/
+internal/
+notebooks/
+beta_stability/tmp/
+beta_stability/exploratory/
+beta_stability/old/
+beta_stability/visualisations/
+beta_stability/results*
+beta_stability/sbatch/
+
+# Configs are internal — only the reference config in examples/ is public
+beta_stability/configs/
+
+# Data files never live in the repo
+*.pickle
+*.pkl
+*.json
+*.zip
+*.gradio
+# A data directory at the repository root, not the beta_stability/data package.
+/data/
+# That package's directory holds working files too, so ignore its contents and
+# keep its source.
+beta_stability/data/*
+!beta_stability/data/*.py
+
+# Frontend (kept for legacy paths)
+ui/node_modules
+
+.claude
+# Legacy LCA files kept on disk after the beta-stability merge, never tracked
+/_archive_lca/
+/beta_stability/share
+# Superseded code, kept out of the repository
+/beta_stability/old/
